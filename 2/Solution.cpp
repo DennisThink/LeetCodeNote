@@ -6,6 +6,7 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+//g++ -O -g -fsanitize=address Solution.cpp
 
 #include <iostream>
 struct ListNode {
