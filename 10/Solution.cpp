@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-
+#define DE_LINE std::cout<<__LINE__<<std::endl;
 class Solution {
 public:
     bool isMatch2(string s, string p) {
@@ -93,6 +93,7 @@ public:
         }
     };
 
+    //根据.和*计算匹配个数
     bool isMatch(string s,string p)
     {
         std::vector<Match_t> matchVec;
@@ -103,49 +104,40 @@ public:
             {
                 matchVec.push_back(Match_t(p[pIndex],true,true));
                 pIndex+=2;
-            }
-            else if(p[pIndex] == '*')
-            {
-                pIndex++;
+                DE_LINE
             }
             else
             {
-                if(!matchVec.empty())
-                {
-                    auto item = matchVec.rbegin();
-                    if(item->m_ch == p[pIndex])
-                    {
-                        
-                    }
-                }
                 matchVec.push_back(Match_t(p[pIndex]));
                 pIndex++;
+                DE_LINE
             }
         }
 
+        std::cout<<"Parse Vec Begin"<<std::endl;
         for(auto item:matchVec)
         {
             item.Print();
         }
+        std::cout<<"Parse Vec End"<<std::endl;
 
         int sIndex = 0;
         int matchIndex = 0;
-        while(sIndex < s.length() && matchIndex < matchVec.size())
+        while( !s.empty() && !matchVec.empty() && matchIndex < matchVec.size())
         {
-
-            
             auto matchValue=matchVec[matchIndex];
-            matchValue.Print();
-            std::cout<<s[sIndex]<<__LINE__<<std::endl;
-            //匹配上了
+          
+            //字符完全匹配
             if(matchValue.m_ch == s[sIndex])
             {
-                sIndex++;
+                s.erase(sIndex,1);
+                matchValue.Print();
+                std::cout<<s[sIndex]<<"  "<<__LINE__<<std::endl;
                 //不能拷贝，matchIndex++
                 if(!(matchValue.m_bCopy))
                 {
                    std::cout<<__LINE__<<std::endl;
-                   matchIndex++;
+                   matchVec.erase(matchVec.begin()+matchIndex);
                 }  
                 else
                 {
@@ -160,13 +152,16 @@ public:
                     //可以忽略，跳过当前匹配
                     if(matchValue.m_bZero)
                     {
-                        std::cout<<__LINE__<<std::endl;
-                        matchIndex++;
+                        matchValue.Print();
+                        std::cout<<s[sIndex]<<"  "<<__LINE__<<std::endl;
+                        matchVec.erase(matchVec.begin());
+                        //matchIndex++;
                     }
                     //不可以忽略，匹配失败
                     else
                     {
-                        std::cout<<__LINE__<<std::endl;
+                        matchValue.Print();
+                        std::cout<<s[sIndex]<<"  "<<__LINE__<<std::endl;
                         return false;
                     }
                 }
@@ -176,47 +171,24 @@ public:
                     //.并且可以拷贝，比较.之后的字符
                     if(matchValue.m_bCopy)
                     {
-                        if(sIndex < s.length()-1)
+                        sIndex++;
+                        if(matchIndex<matchVec.size())
                         {
-                            //当前位置和下一个位置匹配
-                            if(s[sIndex] == s[sIndex+1])
-                            {
-                                sIndex++;
-                            }
-                            //当前位置和下一个位置不匹配
-                            else
-                            {
-                                sIndex++;
-                                matchIndex++;
-                            }
-                        }
-                        else
-                        {
-                            /* code */
-                            sIndex++;
-                        }
-                        
-                        if(matchIndex == matchVec.size()-1)
-                        {
-                            std::cout<<__LINE__<<std::endl;
-                            return true;
-                        }
-                        else
-                        {
-                            std::cout<<__LINE__<<std::endl;
-                            sIndex++;
+                            matchIndex++;
                         }
                     }
                     else
                     {
                         //. 匹配任意字符
                         std::cout<<__LINE__<<std::endl;
-                        matchIndex++;
+                        //matchIndex++;
+                        matchVec.erase(matchVec.begin());
                         sIndex++;
                     }
                 }
             }
         }
+
         if(sIndex != s.length())
         {
             std::cout<<__LINE__<<std::endl;
@@ -290,13 +262,31 @@ int main(int argc,char * argv[])
         std::cout<<"bad"<<std::endl;
     }*/
 
-    if(solu.isMatch("mississippi","mis*is*p*."))
+    /*if(solu.isMatch("mississippi","mis*is*p*."))
     {
        std::cout<<"good"<<std::endl;
     }
     else
     {
         std::cout<<"bad"<<std::endl;
+    }*/
+
+    if(solu.isMatch("ab",".*c"))
+    {
+       std::cout<<"Not Passed"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"Passed "<<std::endl;
+    }
+
+    if(solu.isMatch("ab",".*"))
+    {
+       std::cout<<"Passed"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"Not Passed "<<std::endl;
     }
     return 0;
 }
