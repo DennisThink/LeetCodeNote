@@ -62,13 +62,13 @@ class OneResultElem
     //实现去重，相同元素返回false，不同元素返回true
     bool operator<(const OneResultElem &other) const
     {
-        if (this->GetCount() != other.GetCount())
+        if (this->GetCount() < other.GetCount())
         {
             return true;
         }
         for (std::size_t index = 0; index < GetCount(); index++)
         {
-            if (this->m_array[index] != other.m_array[index])
+            if (this->m_array[index] < other.m_array[index])
             {
                 return true;
             }
@@ -178,6 +178,13 @@ std::vector<OneResultElem> Combination(const int nTotal, const int nSelectElem)
     for (auto item : allElem)
     {
         elemSet.insert(item.SortSubElem(nSelectElem));
+        {
+            std::cout << "------------------" << std::endl;
+            for (const auto elem : elemSet)
+            {
+                std::cout << elem.ToString() << std::endl;
+            }
+        }
     }
 
     for (auto item : elemSet)
